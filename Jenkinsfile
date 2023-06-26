@@ -17,9 +17,9 @@ pipeline {
         script {     
           sh '''
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 303150498045.dkr.ecr.us-east-1.amazonaws.com
-          sudo docker build -t project-c42:${BUILD_NUMBER} .
-          sudo docker tag project-c42:${BUILD_NUMBER} 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}
-          sudo docker push 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}
+          docker build -t project-c42:${BUILD_NUMBER} .
+          docker tag project-c42:${BUILD_NUMBER} 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}
+          docker push 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}
           '''
         }
       }
@@ -28,8 +28,8 @@ pipeline {
     stage('Cleanup the docker image') {
       steps {
         script {
-          sh 'sudo docker rmi 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
-          sh 'sudo docker rmi project-c42:${BUILD_NUMBER}'
+          sh 'docker rmi 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
+          sh 'docker rmi project-c42:${BUILD_NUMBER}'
         }
       }
     }
@@ -39,8 +39,8 @@ pipeline {
         script {
           sh '''
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 303150498045.dkr.ecr.us-east-1.amazonaws.com
-          sudo docker pull 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}
-          sudo docker run -d -p 8080:8081 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}
+          docker pull 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}
+          docker run -d -p 8080:8081 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}
           '''
         }
       }
