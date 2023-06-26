@@ -14,8 +14,8 @@ pipeline {
     stage('Build Docker Image') {
       steps {
         script {   
-          sh 'cd project-c42 && docker build -t project-c42:${BUILD_NUMBER} . '
-          sh 'cd project-c42 && docker tag project-c42:latest 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
+          sh 'sudo docker build -t project-c42:${BUILD_NUMBER} . '
+          sh 'sudo docker tag project-c42:latest 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
           sh 'sudo docker push 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
         }
       }
@@ -34,7 +34,7 @@ pipeline {
       steps {
         script {
           sh 'sudo docker pull 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'  
-          sh 'cd project-c42 && sudo docker run -d -p 8080:8081 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER} '
+          sh 'sudo docker run -d -p 8080:8081 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER} '
         }
       }
     }
