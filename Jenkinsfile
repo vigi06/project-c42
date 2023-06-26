@@ -2,7 +2,7 @@ pipeline {
   agent {
     label 'worker'
   }
-
+   
   stages {
     stage('Git Checkout') {
       steps {
@@ -11,7 +11,14 @@ pipeline {
                   userRemoteConfigs: [[url: 'https://github.com/vigi06/project-c42.git']]])
       }
     }
-
+    
+     stage('Stopping the container') {
+      steps {
+        script {
+          sh 'docker kill $(docker ps -q)'
+        }
+      }
+    }
     stage('Build Docker Image') {
       steps {
         script {     
