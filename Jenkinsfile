@@ -3,9 +3,6 @@ pipeline {
     label 'worker'
   }
 
-    
-
-  
   stages {
 
     stage('login to ECR') {
@@ -55,4 +52,5 @@ pipeline {
     disableConcurrentBuilds()
     timeout(time: 1, unit: 'HOURS')
   }
+}
 }
