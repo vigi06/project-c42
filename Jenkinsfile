@@ -13,7 +13,8 @@ pipeline {
 
     stage('Build Docker Image') {
       steps {
-        script {   
+        script {
+          sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 303150498045.dkr.ecr.us-east-1.amazonaws.com'
           sh 'sudo docker build -t project-c42:${BUILD_NUMBER} . '
           sh 'sudo docker tag project-c42:${BUILD_NUMBER} 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
           sh 'sudo docker push 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
@@ -33,6 +34,7 @@ pipeline {
     stage('Deploy the application') {
       steps {
         script {
+          sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 303150498045.dkr.ecr.us-east-1.amazonaws.com'
           sh 'sudo docker pull 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'  
           sh 'sudo docker run -d -p 8080:8081 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER} '
         }
