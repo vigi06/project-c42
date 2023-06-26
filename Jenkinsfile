@@ -3,13 +3,6 @@ pipeline {
     label 'worker'
   }
 
-  stages {
-    stage('login to ECR') {
-      steps {
-        sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 303150498045.dkr.ecr.us-east-1.amazonaws.com'
-      }
-    }
-
     stage('Git Checkout') {
       steps {
         checkout([$class: 'GitSCM',
@@ -21,9 +14,12 @@ pipeline {
     stage('Build Docker Image') {
       steps {
         script {     
-          sh 'sudo docker build -t project-c42:${BUILD_NUMBER} . '
-          sh 'sudo docker tag project-c42:${BUILD_NUMBER} 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
-          sh 'sudo docker push 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
+          sh '''
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 303150498045.dkr.ecr.us-east-1.amazonaws.com
+          sudo docker build -t project-c42:${BUILD_NUMBER} . '
+          sudo docker tag project-c42:${BUILD_NUMBER} 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
+          sudo docker push 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
+          '''
         }
       }
     }
@@ -39,9 +35,12 @@ pipeline {
 
     stage('Deploy the application') {
       steps {
-        script { 
-          sh 'sudo docker pull 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'  
-          sh 'sudo docker run -d -p 8080:8081 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER} '
+        script {
+          sh '''
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 303150498045.dkr.ecr.us-east-1.amazonaws.com
+          sudo docker pull 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}
+          sudo docker run -d -p 8080:8081 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}
+          '''
         }
       }
     }
