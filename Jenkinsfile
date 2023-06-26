@@ -15,7 +15,7 @@ pipeline {
       steps {
         script {   
           sh 'sudo docker build -t project-c42:${BUILD_NUMBER} . '
-          sh 'sudo docker tag project-c42:latest 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
+          sh 'sudo docker tag project-c42:${BUILD_NUMBER} 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
           sh 'sudo docker push 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
         }
       }
